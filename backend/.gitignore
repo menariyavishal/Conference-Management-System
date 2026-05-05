@@ -1,0 +1,102 @@
+# Compiled binaries
+*.exe
+*.out
+*.app
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+
+# Build directories
+build/
+Build/
+cmake-build-debug/
+cmake-build-release/
+bin/
+dist/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.user
+.DS_Store
+*.swp
+*.swo
+*~
+.sublime-workspace
+.sublime-project
+
+# Dependencies
+conan/
+conaninfo.txt
+conandeps.cmake
+conanfile.lock
+node_modules/
+*.lock
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads and generated files
+uploads/
+generated/
+*.generated.h
+*.generated.cpp
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Documentation generated
+docs/generated/
+docs/html/
+docs/latex/
+
+# Test coverage
+coverage/
+*.gcov
+*.gcno
+*.gcda
+
+# Package files
+*.tar
+*.tar.gz
+*.zip
+*.rar
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# IDE Cache
+.clang_complete
+.ycm_extra_conf.pyc
+compile_commands.json
+.cache/
+
+# CMake
+CMakeLists.txt.user
+CMakeUserPresets.json
+.cmake/
