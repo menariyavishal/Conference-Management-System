@@ -16,6 +16,10 @@ void AuthController::handleRegister(const httplib::Request& req, httplib::Respon
         return;
     }
 
+    // Extract optional fields
+    std::string affiliation = body.value("affiliation", "");
+    std::string interests = body.value("interests", json::array()).dump();
+    
     auto result = userService->registerUser(
         body["email"].get<std::string>(),
         body["password"].get<std::string>(),

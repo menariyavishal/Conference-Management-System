@@ -32,15 +32,17 @@ std::string EncryptionUtils::hashPassword(const std::string& password, int round
 // Verify password against hash
 bool EncryptionUtils::verifyPassword(const std::string& password, const std::string& hash) {
     try {
-        // Extract salt from hash
-        size_t first = hash.find('$', 8);
-        size_t second = hash.find('$', first + 1);
-        
-        if (first == std::string::npos || second == std::string::npos) {
+        // Expected format: $sha256$salt$hash
+        if (hash.length() < 9 || hash.substr(0, 8) != "$sha256$") {
             return false;
         }
         
-        std::string salt = hash.substr(first + 1, second - first - 1);
+        size_t saltEnd = hash.find('$', 8);
+        if (saltEnd == std::string::npos) {
+            return false;
+        }
+        
+        std::string salt = hash.substr(8, saltEnd - 8);
         
         // Compute hash of password with extracted salt
         unsigned char computedHash[SHA256_DIGEST_LENGTH];
@@ -53,7 +55,7 @@ bool EncryptionUtils::verifyPassword(const std::string& password, const std::str
             ss << std::hex << std::setw(2) << std::setfill('0') << (int)computedHash[i];
         }
         
-        std::string stored = hash.substr(second + 1);
+        std::string stored = hash.substr(saltEnd + 1);
         return ss.str() == stored;
     } catch (...) {
         return false;
@@ -118,9 +120,8 @@ std::string EncryptionUtils::encodeBase64(const std::string& input) {
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     
     std::string encoded;
-    unsigned int val = 0;
+    int val = 0;
     int valb = -6;
-    
     for (unsigned char c : input) {
         val = (val << 8) + c;
         valb += 8;
@@ -129,15 +130,12 @@ std::string EncryptionUtils::encodeBase64(const std::string& input) {
             valb -= 6;
         }
     }
-    
     if (valb > -6) {
         encoded.push_back(base64_chars[((val << 8) >> (valb + 8)) & 0x3F]);
     }
-    
     while (encoded.size() % 4) {
         encoded.push_back('=');
     }
-    
     return encoded;
 }
 
@@ -147,9 +145,8 @@ std::string EncryptionUtils::decodeBase64(const std::string& input) {
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     
     std::string decoded;
-    unsigned int val = 0;
-    int valb = -6;
-    
+    int val = 0;
+    int valb = -8;
     for (unsigned char c : input) {
         if (c == '=') break;
         size_t pos = base64_chars.find(c);
@@ -162,7 +159,6 @@ std::string EncryptionUtils::decodeBase64(const std::string& input) {
             valb -= 8;
         }
     }
-    
     return decoded;
 }
 

@@ -137,13 +137,23 @@ public:
 
         httplib::Server svr;
 
-        // ── CORS pre-flight (OPTIONS) ──────────────────────────────────────────
-        svr.Options(".*", [](const httplib::Request&, httplib::Response& res) {
+        // ── Global CORS pre-flight & headers ───────────────────────────────────
+        svr.set_pre_routing_handler([](const httplib::Request& req, httplib::Response& res) {
+            // Append CORS headers to EVERY request
             res.set_header("Access-Control-Allow-Origin", "*");
             res.set_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-            res.status = 204;
+            res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept");
+
+            // If it's a pre-flight request, handle it immediately and stop routing
+            if (req.method == "OPTIONS") {
+                res.status = 204;
+                return httplib::Server::HandlerResponse::Handled;
+            }
+
+            // Otherwise, let the normal routing continue
+            return httplib::Server::HandlerResponse::Unhandled;
         });
+
 
         // ── Auth routes ───────────────────────────────────────────────────────
         svr.Post("/api/v1/auth/register", [this](const httplib::Request& req, httplib::Response& res) {

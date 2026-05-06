@@ -2,8 +2,8 @@
 ## OOAD Mini Project - Complete Design Document
 
 **Project Date:** May 5, 2026  
-**Technology Stack:** C++ Backend + Dogon Framework + Web Frontend  
-**Architecture:** Modular (Single Feature Per File)
+**Technology Stack:** C++ Backend + React Frontend (Vite) + Tailwind CSS + Framer Motion  
+**Architecture:** Modular (Single Feature Per File) + REST API Interaction
 
 ---
 

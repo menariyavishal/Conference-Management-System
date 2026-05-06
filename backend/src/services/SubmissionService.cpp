@@ -25,21 +25,21 @@ private:
         const std::string& abstract,
         const std::string& keywords
     ) {
-        if (title.empty() || title.length() < 5 || title.length() > 250) {
-            lastError = "Title must be between 5 and 250 characters";
+        if (title.empty() || title.length() < 3 || title.length() > 500) {
+            lastError = "Title must be between 3 and 500 characters";
             return false;
         }
-
-        if (abstract.empty() || abstract.length() < 50 || abstract.length() > 1000) {
-            lastError = "Abstract must be between 50 and 1000 characters";
+ 
+        if (abstract.empty() || abstract.length() < 10 || abstract.length() > 5000) {
+            lastError = "Abstract must be between 10 and 5000 characters";
             return false;
         }
-
-        if (keywords.empty() || keywords.length() > 200) {
-            lastError = "Keywords must be provided and under 200 characters";
+ 
+        if (keywords.empty() || keywords.length() > 500) {
+            lastError = "Keywords must be provided and under 500 characters";
             return false;
         }
-
+ 
         return true;
     }
 

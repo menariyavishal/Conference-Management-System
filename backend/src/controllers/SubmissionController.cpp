@@ -1,5 +1,6 @@
 #include "controllers/SubmissionController.h"
 #include "controllers/ControllerHelpers.h"
+#include <fstream>
 
 namespace conference {
 namespace controllers {
@@ -35,18 +36,58 @@ void SubmissionController::handleCreate(const httplib::Request& req, httplib::Re
         sendError(res, 403, "Only authors can create submissions", "FORBIDDEN"); return;
     }
 
-    auto body = parseBody(req);
-    if (!body.contains("title") || !body.contains("abstract")) {
+    std::string title, abstract, authors, keywords, conferenceId;
+    bool hasFile = false;
+    std::string fileContent, fileName, contentType;
+
+    if (req.is_multipart_form_data()) {
+        if (req.form.has_field("title")) title = req.form.get_field("title");
+        if (req.form.has_field("abstract")) abstract = req.form.get_field("abstract");
+        if (req.form.has_field("authors")) authors = req.form.get_field("authors");
+        if (req.form.has_field("keywords")) keywords = req.form.get_field("keywords");
+        if (req.form.has_field("conferenceId")) conferenceId = req.form.get_field("conferenceId");
+
+        if (req.form.has_file("file")) {
+            auto file = req.form.get_file("file");
+            fileContent = file.content;
+            fileName = file.filename;
+            contentType = file.content_type;
+            hasFile = true;
+        }
+    } else {
+        auto body = parseBody(req);
+        title = body.value("title", "");
+        abstract = body.value("abstract", "");
+        authors = body.value("authors", "");
+        keywords = body.value("keywords", "");
+        conferenceId = body.value("conferenceId", "");
+    }
+
+    if (title.empty() || abstract.empty()) {
         sendError(res, 400, "title and abstract are required", "VALIDATION_ERROR"); return;
     }
 
-    auto result = submissionService->createSubmission(
-        userId,
-        body["title"].get<std::string>(),
-        body["abstract"].get<std::string>(),
-        body.value("keywords", ""),
-        body.value("conferenceId", "")
-    );
+    auto result = submissionService->createSubmission(userId, title, abstract, keywords, conferenceId);
+    
+    if (result["success"].get<bool>() && hasFile) {
+        std::string submissionId = result["data"]["submissionId"].get<std::string>();
+        
+        // Save file locally first to a temp location for the service to pick up
+        std::string tempPath = "uploads/temp_" + fileName;
+        std::ofstream ofs(tempPath, std::ios::binary);
+        ofs.write(fileContent.data(), fileContent.size());
+        ofs.close();
+
+        auto uploadResult = submissionService->uploadFile(submissionId, tempPath, userId);
+        if (!uploadResult["success"].get<bool>()) {
+            // Note: submission was created but file failed. 
+            // In a real app we might want to rollback or notify user.
+            result["message"] = result["message"].get<std::string>() + " (But file upload failed: " + uploadResult["error"].get<std::string>() + ")";
+        } else {
+            result["data"]["fileId"] = uploadResult["data"]["fileId"];
+        }
+    }
+
     sendJson(res, result["success"].get<bool>() ? 201 : 400, result);
 }
 
