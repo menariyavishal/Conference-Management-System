@@ -6,12 +6,15 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+add_definitions(-D_WIN32_WINNT=0x0A00)
 
-# Set PostgreSQL root on Windows
+# Set PostgreSQL root on Windows - Prefer MSYS2 UCRT64
 if(WIN32)
-    set(PostgreSQL_ROOT "C:/Program Files/PostgreSQL/18")
-    set(PostgreSQL_INCLUDE_DIR "C:/Program Files/PostgreSQL/18/include")
-    set(PostgreSQL_LIBRARY_DIR "C:/Program Files/PostgreSQL/18/lib")
+    if(EXISTS "C:/msys64/ucrt64")
+        set(PostgreSQL_ROOT "C:/msys64/ucrt64")
+    else()
+        set(PostgreSQL_ROOT "C:/Program Files/PostgreSQL/18")
+    endif()
 endif()
 
 # Enable testing

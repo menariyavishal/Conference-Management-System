@@ -2,28 +2,93 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #64748b;
+  --accent: #3b82f6;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+}
+
 @layer base {
   body {
-    @apply bg-[#0f172a] text-slate-200 antialiased min-h-screen;
-    background-image: 
-      radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-      radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-      radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    @apply bg-[#f8fafc] text-[#0f172a] font-sans antialiased overflow-x-hidden;
+    background: radial-gradient(circle at top right, #e0e7ff, transparent 40%),
+                radial-gradient(circle at bottom left, #f1f5f9, transparent 40%);
   }
 }
 
-.glass {
-  @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-xl;
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 rounded-2xl bg-[#2563eb] text-white font-bold transition-all duration-300 
+           hover:bg-[#1d4ed8] hover:shadow-[0_10px_25px_-5px_rgba(37,99,235,0.4)] active:scale-95 disabled:opacity-50;
+  }
+
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    @apply rounded-3xl p-8;
+  }
+
+  .input-field {
+    @apply w-full bg-slate-100/50 border border-slate-200 rounded-2xl px-4 py-3 text-slate-900 
+           placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 
+           transition-all duration-200 outline-none;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+  }
 }
 
-.glass-card {
-  @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 shadow-2xl transition-all duration-300 hover:bg-white/15;
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-.text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 font-bold;
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
-.btn-primary {
-  @apply px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 active:scale-95;
+.flip-card {
+  perspective: 2000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-front, .flip-back {
+  width: 100%;
+  backface-visibility: hidden;
+}
+
+.flip-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotateY(180deg);
 }
