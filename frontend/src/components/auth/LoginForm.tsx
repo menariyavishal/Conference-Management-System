@@ -63,54 +63,57 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitch }) => {
         <p className="text-slate-400 mt-2">Sign in to your account</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Email address</label>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">Email address</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 transition"
+            className="input-field"
             placeholder="example@gmail.com"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Password</label>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 transition"
+            className="input-field"
             placeholder="········"
             required
           />
         </div>
         <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 text-sm text-slate-300">
-            <input type="checkbox" className="rounded bg-white/5 border-white/20" /> Remember Me
+          <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+            <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" /> Remember Me
           </label>
-          <a href="#" className="text-sm text-blue-400 hover:underline">Forgot Password?</a>
+          <a href="#" className="text-sm text-blue-600 hover:text-blue-700 font-semibold">Forgot Password?</a>
         </div>
         <button
           type="submit"
           disabled={isLoading}
-          className="btn-primary w-full py-3 text-lg font-semibold"
+          className="btn-primary w-full py-4 text-lg"
         >
-          {isLoading ? 'Logging in...' : 'Login'}
+          {isLoading ? 'Signing in...' : 'Sign In'}
         </button>
       </form>
 
-      <div className="mt-6 text-center">
-        <p className="text-slate-400">
-          Are you a new member?{' '}
+      <div className="mt-8 text-center">
+        <p className="text-slate-500">
+          New to the platform?{' '}
           <button
             type="button"
             onClick={onSwitch}
-            className="text-blue-400 hover:underline font-semibold"
+            className="text-blue-600 hover:underline font-bold"
           >
-            Sign Up
+            Create Account
           </button>
+        </p>
+        <p className="text-slate-400 text-[10px] mt-6 opacity-60 tracking-wider uppercase">
+          🔐 SECURE ENCRYPTED CONNECTION
         </p>
       </div>
     </div>
